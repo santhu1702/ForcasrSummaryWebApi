@@ -15,7 +15,7 @@ namespace ForcasrSummaryWebApi.Controllers
             _context = context;
         }
 
-        [HttpGet("getSubCatagoery")]
+        [HttpGet("SubCatagoery")]
         public async Task<ActionResult<SubCategoryDTO>> GetSubCategoryAsync()
         {
             try
@@ -38,12 +38,12 @@ namespace ForcasrSummaryWebApi.Controllers
 
 
 
-        [HttpGet]
+        [HttpGet("SummaryData")]
         public async Task<ActionResult<USP_GetSummaryDataResult>> getSummaryData()
         {
             return Ok(await _context.GetProcedures().USP_GetSummaryDataAsync());
         }
-        [HttpGet("SubCatagoery")]
+        [HttpGet("SummaryDataByBrand")]
         public async Task<ActionResult<USP_GetSummaryDataByBrandResult>> getSummaryDataByBrand(string SubCatagoery)
         {
             return Ok(await _context.GetProcedures().USP_GetSummaryDataByBrandAsync(SubCatagoery));
