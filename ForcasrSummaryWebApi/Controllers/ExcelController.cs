@@ -24,9 +24,10 @@ namespace ForcasrSummaryWebApi.Controllers
                     .Select(x => x.SubCategory)
                     .Distinct()
                     .ToListAsync();
+                    
 
 
-                return Ok(categories);
+                return Ok(categories.ToList());
             }
             catch (Exception ex)
             {
