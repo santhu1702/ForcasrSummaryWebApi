@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using ForcasrSummaryWebApi.DTOs;
 using ForcasrSummaryWebApi.MetaData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,16 +20,40 @@ namespace ForcasrSummaryWebApi.Controllers
 
 
 
-        [HttpGet("SubCatagoery")]
-        public async Task<ActionResult<SubCategoryDTO>> GetSubCategoryAsync()
+        [HttpGet("DropDownsData")]
+        public async Task<ActionResult<CombinedDataDTO>> GetDropDownsData()
         {
             try
             {
-                var categories = await _context.SummaryForcast
+                var subCategories = await _context.SummaryForcast
                     .Select(x => x.SubCategory)
                     .Distinct()
                     .ToListAsync();
-                return Ok(categories.ToList());
+
+                var sources = await _context.SummaryForcast
+                    .Select(x => x.Source)
+                    .Distinct()
+                    .ToListAsync();
+
+                var brands = await _context.SummaryForcast
+                    .Select(x => x.Brand)
+                    .Distinct()
+                    .ToListAsync();
+
+                var years = await _context.SummaryForcast
+                    .Select(x => x.Year)
+                    .Distinct()
+                    .ToListAsync();
+
+                var combinedData = new CombinedDataDTO
+                {
+                    SubCategories = subCategories,
+                    Sources = sources,
+                    Brands = brands,
+                    Years = years.Select(x => x.Value).ToList()
+                };
+
+                return Ok(combinedData);
             }
             catch (Exception ex)
             {
@@ -36,6 +61,8 @@ namespace ForcasrSummaryWebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
 
         [HttpGet("SummaryData")]
         public async Task<ActionResult<IEnumerable<object>>> GetSummaryData()
@@ -114,7 +141,7 @@ namespace ForcasrSummaryWebApi.Controllers
                 };
 
                 mergeArray.Add(mergeList);
-               // bindingQuatersData(dataByYear, categoryColumnNo);
+                // bindingQuatersData(dataByYear, categoryColumnNo);
                 categoryColumnNo += 4;
 
             }
@@ -129,7 +156,7 @@ namespace ForcasrSummaryWebApi.Controllers
         }
 
 
-        
+
         [HttpGet("SummaryDataByBrand")]
         public async Task<ActionResult<USP_GetSummaryDataByBrandResult>> getSummaryDataByBrand(string SubCatagoery)
         {
