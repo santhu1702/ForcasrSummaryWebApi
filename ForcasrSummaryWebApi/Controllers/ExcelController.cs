@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using ForcasrSummaryWebApi.CommonMethods;
 using ForcasrSummaryWebApi.DTO_s;
 using ForcasrSummaryWebApi.DTOs;
@@ -83,6 +84,8 @@ namespace ForcasrSummaryWebApi.Controllers
             var dataList = await _context.GetProcedures().USP_GetSummaryDataAsync();
             var dataByYear = dataList.GroupBy(d => d.Year).OrderBy(g => g.Key);
             List<Dictionary<string, int>> mergeArray = new List<Dictionary<string, int>>();
+            var subcname = "BAR SOAP";
+            var getDataByBrand = await _context.GetProcedures().USP_GetSummaryDataByBrandAsync("BABY CLEANSING,BAR SOAP", "IRI", "BODY CLEANSING", "Brand 1,Brand 2", "2020,2021");
 
             foreach (var yearData in dataByYear)
             {
@@ -143,14 +146,12 @@ namespace ForcasrSummaryWebApi.Controllers
                 };
 
                 mergeArray.Add(mergeList);
-               // var subcname = "BAR SOAP";
-               // var getDataByBrand = await _context.GetProcedures().USP_GetSummaryDataByBrandAsync(subcname);
-                // clsCommonMethods.bindingQuatersData(dataByYear, categoryColumnNo);
-              //  clsCommonMethods.getsubbrand(getDataByBrand, _headers, _quaterHeaders, summaryDataArray , subcname);
+                 // clsCommonMethods.bindingQuatersData(dataByYear, categoryColumnNo);
+                clsCommonMethods.getsubbrand(getDataByBrand, _headers, _quaterHeaders, summaryDataArray , subcname);
                 categoryColumnNo += 4;
 
             }
-
+            
             var output = new
             {
                 data = summaryDataArray,
