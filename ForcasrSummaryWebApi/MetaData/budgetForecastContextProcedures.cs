@@ -68,7 +68,7 @@ namespace ForcasrSummaryWebApi.MetaData
             return _;
         }
 
-        public virtual async Task<List<USP_GetSummaryDataByBrandResult>> USP_GetSummaryDataByBrandAsync(string SubCatagoery, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<USP_GetSummaryDataByBrandResult>> USP_GetSummaryDataByBrandAsync(string SubCatagoery, string source, string category, string brands, string years, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -86,9 +86,37 @@ namespace ForcasrSummaryWebApi.MetaData
                     Value = SubCatagoery ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.NVarChar,
                 },
+                new SqlParameter
+                {
+                    ParameterName = "source",
+                    Size = 2000,
+                    Value = source ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "category",
+                    Size = 2000,
+                    Value = category ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "brands",
+                    Size = 2000,
+                    Value = brands ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "years",
+                    Size = 2000,
+                    Value = years ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<USP_GetSummaryDataByBrandResult>("EXEC @returnValue = [dbo].[USP_GetSummaryDataByBrand] @SubCatagoery", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<USP_GetSummaryDataByBrandResult>("EXEC @returnValue = [dbo].[USP_GetSummaryDataByBrand] @SubCatagoery, @source, @category, @brands, @years", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

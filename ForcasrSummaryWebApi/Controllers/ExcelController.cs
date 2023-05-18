@@ -1,4 +1,6 @@
 ﻿using System.Data;
+using ForcasrSummaryWebApi.CommonMethods;
+using ForcasrSummaryWebApi.DTO_s;
 using ForcasrSummaryWebApi.DTOs;
 using ForcasrSummaryWebApi.MetaData;
 using Microsoft.AspNetCore.Mvc;
@@ -111,12 +113,12 @@ namespace ForcasrSummaryWebApi.Controllers
                     summaryDataArray.Add(additionalValues6);
                     summaryDataArray.Add(additionalValues7);
                     Dictionary<string, int> mergeList1 = new Dictionary<string, int>
-                {
-                    { "row", categoryColumnNo -1 },
-                    { "col", 0 },
-                    { "rowspan",10 },
-                    { "colspan", 1 }
-                };
+                    {
+                        { "row", categoryColumnNo -1 },
+                        { "col", 0 },
+                        { "rowspan",10 },
+                        { "colspan", 1 }
+                    };
 
                     mergeArray.Add(mergeList1);
 
@@ -141,7 +143,10 @@ namespace ForcasrSummaryWebApi.Controllers
                 };
 
                 mergeArray.Add(mergeList);
-                // bindingQuatersData(dataByYear, categoryColumnNo);
+               // var subcname = "BAR SOAP";
+               // var getDataByBrand = await _context.GetProcedures().USP_GetSummaryDataByBrandAsync(subcname);
+                // clsCommonMethods.bindingQuatersData(dataByYear, categoryColumnNo);
+              //  clsCommonMethods.getsubbrand(getDataByBrand, _headers, _quaterHeaders, summaryDataArray , subcname);
                 categoryColumnNo += 4;
 
             }
@@ -157,10 +162,14 @@ namespace ForcasrSummaryWebApi.Controllers
 
 
 
-        [HttpGet("SummaryDataByBrand")]
-        public async Task<ActionResult<USP_GetSummaryDataByBrandResult>> getSummaryDataByBrand(string SubCatagoery)
+        [HttpGet("SummaryDataByFilters")]
+        public async Task<ActionResult<USP_GetSummaryDataByBrandResult>> getSummaryDataByBrand(SummaryDataByBrandDTO summaryData)
         {
-            return Ok(await _context.GetProcedures().USP_GetSummaryDataByBrandAsync(SubCatagoery));
+            return Ok(await _context.GetProcedures().USP_GetSummaryDataByBrandAsync(string.Join(",", summaryData.subCatagoery),
+                                                                                    string.Join(",", summaryData.source),
+                                                                                    string.Join(",", summaryData.category),
+                                                                                    string.Join(",", summaryData.brands),
+                                                                                    string.Join(",", summaryData.years)));
         }
 
 
