@@ -68,7 +68,7 @@ namespace ForcasrSummaryWebApi.Controllers
 
 
         [HttpGet("SummaryData")]
-        public async Task<ActionResult<IEnumerable<object>>> GetSummaryData()
+        public async Task<ActionResult<IEnumerable<SummaryDataDTO>>> GetSummaryData()
         {
             var categoryColumnNo = 2;
             var headers = _headers.Replace("SubCategory", "xyz").Split(',');
@@ -85,7 +85,7 @@ namespace ForcasrSummaryWebApi.Controllers
             var dataByYear = dataList.GroupBy(d => d.Year).OrderBy(g => g.Key);
             List<Dictionary<string, int>> mergeArray = new List<Dictionary<string, int>>();
             var subcname = "BAR SOAP";
-            var getDataByBrand = await _context.GetProcedures().USP_GetSummaryDataByBrandAsync("BABY CLEANSING,BAR SOAP", "IRI", "BODY CLEANSING", "Brand 1,Brand 2", "2020,2021");
+            var getDataByBrand = await _context.GetProcedures().USP_GetSummaryDataByBrandAsync("BABY CLEANSING,BAR SOAP", "IRI", "Brand 1,Brand 2", "2020,2021");
 
             foreach (var yearData in dataByYear)
             {
@@ -147,15 +147,15 @@ namespace ForcasrSummaryWebApi.Controllers
 
                 mergeArray.Add(mergeList);
                  // clsCommonMethods.bindingQuatersData(dataByYear, categoryColumnNo);
-                clsCommonMethods.getsubbrand(getDataByBrand, _headers, _quaterHeaders, summaryDataArray , subcname);
                 categoryColumnNo += 4;
 
             }
-            
-            var output = new
+                clsCommonMethods.getsubbrand(getDataByBrand, _headers, _quaterHeaders, summaryDataArray , subcname , mergeArray , categoryColumnNo);
+
+            var output = new SummaryDataDTO
             {
-                data = summaryDataArray,
-                summaryDataArray = mergeArray
+                Data = summaryDataArray,
+                MergeData = mergeArray
             };
 
             return Ok(output);
@@ -168,7 +168,6 @@ namespace ForcasrSummaryWebApi.Controllers
         {
             return Ok(await _context.GetProcedures().USP_GetSummaryDataByBrandAsync(string.Join(",", summaryData.subCatagoery),
                                                                                     string.Join(",", summaryData.source),
-                                                                                    string.Join(",", summaryData.category),
                                                                                     string.Join(",", summaryData.brands),
                                                                                     string.Join(",", summaryData.years)));
         }

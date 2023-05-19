@@ -50,14 +50,14 @@ namespace ForcasrSummaryWebApi.CommonMethods
             return columnName;
         }
 
-        public static List<string[]> getsubbrand(List<USP_GetSummaryDataByBrandResult> dataList, string headers, string quaterHeaders, List<string[]> summaryDataArray, string subCategoryName)
+        public static List<string[]> getsubbrand(List<USP_GetSummaryDataByBrandResult> dataList, string headers, string quaterHeaders, List<string[]> summaryDataArray, string subCategoryName, List<Dictionary<string, int>> mergeArray , int categoryColumnNo)
         {
             try
             {
 
             var dataByBrand = dataList.GroupBy(d => d.Brand)
                                         .OrderBy(g => g.Key == "Total" ? 0 : 1);
-            var categoryColumnNo = 25;
+            //var categoryColumnNo = 25;
             summaryDataArray.Add(new[] { "" });
             foreach (var brandData in dataByBrand)
             {
@@ -72,7 +72,7 @@ namespace ForcasrSummaryWebApi.CommonMethods
                 summaryDataArray.Add(result);
 
                 var dataByYear = brandData.GroupBy(d => d.Year).OrderBy(g => g.Key);
-                List<Dictionary<string, int>> mergeArray = new List<Dictionary<string, int>>();
+                //List<Dictionary<string, int>> mergeArray = new List<Dictionary<string, int>>();
 
                 foreach (var yearData in dataByYear)
                 {
@@ -102,13 +102,12 @@ namespace ForcasrSummaryWebApi.CommonMethods
                         summaryDataArray.Add(additionalValues6);
                         summaryDataArray.Add(additionalValues7);
                         Dictionary<string, int> mergeList1 = new Dictionary<string, int>
-                    {
-                        { "row", categoryColumnNo -1 },
-                        { "col", 0 },
-                        { "rowspan",10 },
-                        { "colspan", 1 }
-                    };
-
+                        {
+                            { "row", categoryColumnNo -1 },
+                            { "col", 0 },
+                            { "rowspan",10 },
+                            { "colspan", 1 }
+                        }; 
                         mergeArray.Add(mergeList1);
 
                     }
