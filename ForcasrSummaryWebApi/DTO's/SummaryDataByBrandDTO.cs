@@ -2,12 +2,13 @@
 {
     public class SummaryDataByBrandDTO
     {
-        public string[]? subCatagoery { get;  set; } 
-        public string[]? source { get; set; }
-     
-        public string[]? brands {get; set;}
-        public string[]? years {get; set;}
+        public string[]? subCategory { get;  set; } 
+        public string[]? DataSource { get; set; }
+        public string[]? rollup { get; set; }
 
-        public string? Mesaure { get; set;}
+        public string[]? Brands { get; set;}
+        public int[]? Years { get; set;}
+
+        public string? Measure { get; set;}
     }
 }

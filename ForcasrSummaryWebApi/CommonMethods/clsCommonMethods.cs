@@ -139,9 +139,24 @@ namespace ForcasrSummaryWebApi.CommonMethods
             }
             catch(Exception ex)
             {
-                throw(ex);  
+                throw ex;
             }
+
         }
+        public static int GetSalesTypeOrder(string salesType)
+        {
+            // Define your custom ordering logic here
+            // Assign a numeric value to each salesType based on the desired order
+
+            // Example:
+            if (salesType == "$ Sales CATEGORY")
+                return 1;
+            else if (salesType == "$ Sales UNILEVER")
+                return 2;
+            else
+                return 3;
+        }
+
 
     }
 }
