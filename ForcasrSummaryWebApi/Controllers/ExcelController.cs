@@ -168,6 +168,7 @@ namespace ForcasrSummaryWebApi.Controllers
         {
             try
             {
+                //= IFERROR(E23 / E22 * 100, 0)
                 var getDataByBrand = await _context.GetProcedures().USP_GetSummaryDataByBrandAsync(string.Join(",", summaryData.subCategory),
                                                                                    string.Join(",", summaryData.DataSource),
                                                                                    string.Join(",", summaryData.Brands),
