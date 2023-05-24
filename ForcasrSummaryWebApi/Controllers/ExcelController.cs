@@ -1,6 +1,5 @@
-﻿using System;
-using System.Data;
-using System.Reflection.PortableExecutable;
+﻿using System.Data;
+using System.Linq;
 using ForcasrSummaryWebApi.CommonMethods;
 using ForcasrSummaryWebApi.DTO_s;
 using ForcasrSummaryWebApi.DTOs;
@@ -225,25 +224,28 @@ namespace ForcasrSummaryWebApi.Controllers
 
                                     if (dataByYear.First().Key != yearData.Key)
                                     {
-                                        nestedValues = nestedValues.Concat(new[] { "" }).ToArray(); 
-                                        if (summaryData.rollup.Contains("Full Year")){
+                                        nestedValues = nestedValues.Concat(new[] { "" }).ToArray();
+                                        if (summaryData.rollup.Contains("Full Year"))
+                                        {
                                             var yearMatValues = new[] { $"=SUM($D{categoryColumnNo + loopCount}:$O{categoryColumnNo + loopCount},$P{categoryColumnNo - 5 + loopCount})" };
                                             nestedValues = nestedValues.Concat(yearMatValues).ToArray();
                                         }
-                                        if (summaryData.rollup.Contains("Half MAT")){//= SUM($P8, D12: I12
+                                        if (summaryData.rollup.Contains("Half MAT"))
+                                        {//= SUM($P8, D12: I12
                                             var yearMatValues = new[] { $"=SUM($D{categoryColumnNo + loopCount}:$I{categoryColumnNo + loopCount},$P{categoryColumnNo - 5 + loopCount})" ,
-                                                                        $"=SUM($J{categoryColumnNo + loopCount}:$O{categoryColumnNo + loopCount})" 
-                                                                      }; 
+                                                                        $"=SUM($J{categoryColumnNo + loopCount}:$O{categoryColumnNo + loopCount})"
+                                                                      };
                                             nestedValues = nestedValues.Concat(yearMatValues).ToArray();
                                         }
-                                        if (summaryData.rollup.Contains("Quarter MAT")){
+                                        if (summaryData.rollup.Contains("Quarter MAT"))
+                                        {
                                             var yearMatValues = new[] { $"=SUM($D{categoryColumnNo + loopCount}:$F{categoryColumnNo + loopCount},$P{categoryColumnNo - 5 + loopCount})" ,
                                                                         $"=SUM($G{categoryColumnNo + loopCount}:$I{categoryColumnNo + loopCount})",$"=SUM($J{categoryColumnNo + loopCount}:$L{categoryColumnNo + loopCount})",
                                                                         $"=SUM($M{categoryColumnNo + loopCount}:$O{categoryColumnNo + loopCount})"
                                                                       };
                                             nestedValues = nestedValues.Concat(yearMatValues).ToArray();
                                         }
-                                        
+
                                     }
                                     summaryDataArray.Add(nestedValues);
                                     loopCount++;  // Increment the loop count variable
@@ -252,7 +254,7 @@ namespace ForcasrSummaryWebApi.Controllers
 
                                 if (dataByYear.Last().Key == yearData.Key)
                                 {
-                                    var additionalValues = new[]
+                                    string[][] fiscalMonthFormulas = new[]
                                     {
                                         new[] {"", yearData.First().Year.ToString() ?? string.Empty,
                                             "$ % Chg", $"=IFERROR(D{categoryColumnNo + 1}/ D{categoryColumnNo - 3}-1, 0)", $"=IFERROR(E{categoryColumnNo + 1}/ E{categoryColumnNo - 3}-1, 0)",
@@ -324,7 +326,90 @@ namespace ForcasrSummaryWebApi.Controllers
                                                 , $"=IFERROR(P{categoryColumnNo + 8} - P{categoryColumnNo + 4}, 0)" }
                                     };
 
-                                    foreach (var Values in additionalValues)
+                                    if(summaryData.rollup.Count() != 0)
+                                    {
+                                        var NullArray = new[] {
+                                            new[] {"" },
+                                            new[] {"" },
+                                            new[] {"" },
+                                            new[] {"" },
+                                            new[] {"" },
+                                            new[] {"" },
+                                            new[] {"" },
+                                            new[] {"" },
+                                        };
+                                        for (int i = 0; i < fiscalMonthFormulas.Length; i++)
+                                        {
+                                            fiscalMonthFormulas[i] = fiscalMonthFormulas[i].Concat(NullArray[i]).ToArray();
+                                        }
+                                    }
+
+                                  
+
+                                    if (summaryData.rollup.Contains("Full Year"))
+                                    {
+                                        var yearMatValues = new[]
+                                        {
+                                          new [] { $"=IFERROR(R{categoryColumnNo + 1}/ R{categoryColumnNo - 3}-1, 0)" },
+                                          new [] { $"=IFERROR(R{categoryColumnNo + 1}/ R{categoryColumnNo}*100, 0)" },
+                                          new [] { $"=IFERROR((R{categoryColumnNo + 3}- R{categoryColumnNo - 2})*100, 0)" },
+                                          new [] { $"=IFERROR(R{categoryColumnNo + 1}, 0)" },
+                                          new [] { $"=IFERROR(R{categoryColumnNo + 5}/ R{categoryColumnNo - 3}-1, 0)" },
+                                          new [] { $"=IFERROR(R{categoryColumnNo + 5}/ R{categoryColumnNo}*100, 0)" },
+                                          new [] { $"=(R{categoryColumnNo + 7} - R{categoryColumnNo - 2})*100" },
+                                          new [] { $"=IFERROR(R{categoryColumnNo + 8} - R{categoryColumnNo + 4}, 0)"}
+                                        };
+                                        for (int i = 0; i < fiscalMonthFormulas.Length; i++)
+                                        {
+                                            fiscalMonthFormulas[i] = fiscalMonthFormulas[i].Concat(yearMatValues[i]).ToArray();
+                                        }
+                                    }
+                                    if (summaryData.rollup.Contains("Half MAT"))
+                                    {
+                                        var yearMatValues = new[]
+                                        {
+                                          new [] { $"=IFERROR(S{categoryColumnNo + 1}/ S{categoryColumnNo - 3}-1, 0)" ,$"=IFERROR(T{categoryColumnNo + 1}/ T{categoryColumnNo - 3}-1, 0)" },
+                                          new [] { $"=IFERROR(S{categoryColumnNo + 1}/ S{categoryColumnNo}*100, 0)" , $"=IFERROR(T{categoryColumnNo + 1}/ T{categoryColumnNo}*100, 0)" },
+                                          new [] { $"=IFERROR((S{categoryColumnNo + 3}- S{categoryColumnNo - 2})*100, 0)",$"=IFERROR((T{categoryColumnNo + 3}- T{categoryColumnNo - 2})*100, 0)" },
+                                          new [] { $"=IFERROR(S{categoryColumnNo + 1}, 0)" ,$"=IFERROR(T{categoryColumnNo + 1}, 0)" },
+                                          new [] { $"=IFERROR(S{categoryColumnNo + 5}/ S{categoryColumnNo - 3}-1, 0)",$"=IFERROR(T{categoryColumnNo + 5}/ T{categoryColumnNo - 3}-1, 0)" },
+                                          new [] { $"=IFERROR(S{categoryColumnNo + 5}/ S{categoryColumnNo}*100, 0)",$"=IFERROR(T{categoryColumnNo + 5}/ T{categoryColumnNo}*100, 0)" },
+                                          new [] { $"=(S{categoryColumnNo + 7} - S{categoryColumnNo - 2})*100",$"=(S{categoryColumnNo + 7} - T{categoryColumnNo - 2})*100" },
+                                          new [] { $"=IFERROR(S{categoryColumnNo + 8} - S{categoryColumnNo + 4}, 0)", $"=IFERROR(T{categoryColumnNo + 8} - T{categoryColumnNo + 4}, 0)"}
+                                        };
+                                        for (int i = 0; i < fiscalMonthFormulas.Length; i++)
+                                        {
+                                            fiscalMonthFormulas[i] = fiscalMonthFormulas[i].Concat(yearMatValues[i]).ToArray();
+                                        }
+                                    }
+                                    if (summaryData.rollup.Contains("Quarter MAT"))
+                                    {
+                                        var yearMatValues = new[]
+                                        {
+                                          new [] { $"=IFERROR(u{categoryColumnNo + 1}/ u{categoryColumnNo - 3}-1, 0)" ,$"=IFERROR(V{categoryColumnNo + 1}/ V{categoryColumnNo - 3}-1, 0)",
+                                                   $"=IFERROR(W{categoryColumnNo + 1}/ W{categoryColumnNo - 3}-1, 0)" ,$"=IFERROR(X{categoryColumnNo + 1}/ X{categoryColumnNo - 3}-1, 0)"},
+                                          new [] { $"=IFERROR(u{categoryColumnNo + 1}/ u{categoryColumnNo}*100, 0)" , $"=IFERROR(V{categoryColumnNo + 1}/ V{categoryColumnNo}*100, 0)",
+                                                   $"=IFERROR(W{categoryColumnNo + 1}/ W{categoryColumnNo}*100, 0)" , $"=IFERROR(X{categoryColumnNo + 1}/ X{categoryColumnNo}*100, 0)"},
+                                          new [] { $"=IFERROR((u{categoryColumnNo + 3}- u{categoryColumnNo - 2})*100, 0)",$"=IFERROR((V{categoryColumnNo + 3}- V{categoryColumnNo - 2})*100, 0)",
+                                                   $"=IFERROR((W{categoryColumnNo + 3}- W{categoryColumnNo - 2})*100, 0)",$"=IFERROR((X{categoryColumnNo + 3}- X{categoryColumnNo - 2})*100, 0)"},
+                                          new [] { $"=IFERROR(u{categoryColumnNo + 1}, 0)" ,$"=IFERROR(v{categoryColumnNo + 1}, 0)",$"=IFERROR(W{categoryColumnNo + 1}, 0)" ,$"=IFERROR(W{categoryColumnNo + 1}, 0)" },
+                                          new [] { $"=IFERROR(u{categoryColumnNo + 5}/ u{categoryColumnNo - 3}-1, 0)",$"=IFERROR(V{categoryColumnNo + 5}/ V{categoryColumnNo - 3}-1, 0)" ,
+                                                   $"=IFERROR(W{categoryColumnNo + 5}/ W{categoryColumnNo - 3}-1, 0)",$"=IFERROR(X{categoryColumnNo + 5}/ X{categoryColumnNo - 3}-1, 0)" },
+                                          new [] { $"=IFERROR(u{categoryColumnNo + 5}/ u{categoryColumnNo}*100, 0)",$"=IFERROR(V{categoryColumnNo + 5}/ V{categoryColumnNo}*100, 0)" ,
+                                                   $"=IFERROR(W{categoryColumnNo + 5}/ W{categoryColumnNo}*100, 0)",$"=IFERROR(X{categoryColumnNo + 5}/ X{categoryColumnNo}*100, 0)" },
+                                          new [] { $"=(u{categoryColumnNo + 7} - u{categoryColumnNo - 2})*100",$"=(V{categoryColumnNo + 7} - V{categoryColumnNo - 2})*100" ,
+                                                   $"=(W{categoryColumnNo + 7} - W{categoryColumnNo - 2})*100",$"=(X{categoryColumnNo + 7} - X{categoryColumnNo - 2})*100" },
+                                          new [] { $"=IFERROR(u{categoryColumnNo + 8} - u{categoryColumnNo + 4}, 0)", $"=IFERROR(V{categoryColumnNo + 8} - V{categoryColumnNo + 4}, 0)",
+                                                   $"=IFERROR(W{categoryColumnNo + 8} - W{categoryColumnNo + 4}, 0)", $"=IFERROR(X{categoryColumnNo + 8} - W{categoryColumnNo + 4}, 0)"}
+                                        };
+                                        for (int i = 0; i < fiscalMonthFormulas.Length; i++)
+                                        {
+                                            fiscalMonthFormulas[i] = fiscalMonthFormulas[i].Concat(yearMatValues[i]).ToArray();
+                                        }
+                                    }
+                                     
+
+                                    foreach (var Values in fiscalMonthFormulas)
                                     {
                                         summaryDataArray.Add(Values);
                                     }
@@ -339,8 +424,28 @@ namespace ForcasrSummaryWebApi.Controllers
                                                     , $"=L{categoryColumnNo + 1}/ L{categoryColumnNo}*100", $"=M{categoryColumnNo + 1}/ M{categoryColumnNo}*100"
                                                     , $"=N{categoryColumnNo + 1}/ N{categoryColumnNo}*100", $"=O{categoryColumnNo + 1}/ O{categoryColumnNo}*100" };
 
-                                       
 
+                                    if (dataByYear.First().Key != yearData.Key)
+                                    {
+                                        additionalValues = additionalValues.Concat(new[] { "" }).ToArray();
+                                        if (summaryData.rollup.Contains("Full Year"))
+                                        {
+                                            var yearMatValues = new[] { $"=R{categoryColumnNo + 1}/ R{categoryColumnNo}*100" };
+                                            additionalValues = additionalValues.Concat(yearMatValues).ToArray();
+                                        }
+                                        if (summaryData.rollup.Contains("Half MAT"))
+                                        {
+                                            var yearMatValues = new[] { $"=S{categoryColumnNo + 1}/ S{categoryColumnNo}*100", $"=T{categoryColumnNo + 1}/ T{categoryColumnNo}*100" };
+                                            additionalValues = additionalValues.Concat(yearMatValues).ToArray();
+                                        }
+                                        if (summaryData.rollup.Contains("Quarter MAT"))
+                                        {
+                                            var yearMatValues = new[] {$"=U{categoryColumnNo + 1}/ U{categoryColumnNo}*100", $"=V{categoryColumnNo + 1}/ V{categoryColumnNo}*100" ,
+                                                                       $"=W{categoryColumnNo + 1}/ W{categoryColumnNo}*100", $"=X{categoryColumnNo + 1}/ X{categoryColumnNo}*100"};
+                                            additionalValues = additionalValues.Concat(yearMatValues).ToArray();
+                                        }
+
+                                    }
                                     summaryDataArray.Add(additionalValues);
                                 }
                                 var BrandmergeList = new Dictionary<string, int>
