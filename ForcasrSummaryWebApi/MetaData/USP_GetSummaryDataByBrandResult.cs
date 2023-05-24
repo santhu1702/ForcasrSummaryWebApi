@@ -13,30 +13,30 @@ namespace ForcasrSummaryWebApi.MetaData
         public string SalesType { get; set; }
         public string SubCategory { get; set; }
         [Column("1")]
-        public decimal? _1 { get; set; }
+        public int _1 { get; set; }
         [Column("2")]
-        public decimal? _2 { get; set; }
+        public int _2 { get; set; }
         [Column("3")]
-        public decimal? _3 { get; set; }
+        public int _3 { get; set; }
         [Column("4")]
-        public decimal? _4 { get; set; }
+        public int _4 { get; set; }
         [Column("5")]
-        public decimal? _5 { get; set; }
+        public int _5 { get; set; }
         [Column("6")]
-        public decimal? _6 { get; set; }
+        public int _6 { get; set; }
         [Column("7")]
-        public decimal? _7 { get; set; }
+        public int _7 { get; set; }
         [Column("8")]
-        public decimal? _8 { get; set; }
+        public int _8 { get; set; }
         [Column("9")]
-        public decimal? _9 { get; set; }
+        public int _9 { get; set; }
         [Column("10")]
-        public decimal? _10 { get; set; }
+        public int _10 { get; set; }
         [Column("11")]
-        public decimal? _11 { get; set; }
+        public int _11 { get; set; }
         [Column("12")]
-        public decimal? _12 { get; set; }
+        public int _12 { get; set; }
         [Column("13")]
-        public decimal? _13 { get; set; }
+        public int _13 { get; set; }
     }
 }
