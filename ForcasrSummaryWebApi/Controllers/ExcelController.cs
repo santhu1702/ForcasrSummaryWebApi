@@ -1,11 +1,15 @@
 ﻿using System.Data;
+using System.IO;
 using System.Linq;
+using ClosedXML.Excel;
 using ForcasrSummaryWebApi.CommonMethods;
 using ForcasrSummaryWebApi.DTO_s;
 using ForcasrSummaryWebApi.DTOs;
 using ForcasrSummaryWebApi.MetaData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using OfficeOpenXml;
 
 namespace ForcasrSummaryWebApi.Controllers
 {
@@ -166,6 +170,7 @@ namespace ForcasrSummaryWebApi.Controllers
 
         #endregion
 
+        #region SummaryDataByFilters 
         [HttpPost("SummaryDataByFilters")]
         public async Task<ActionResult<IEnumerable<SummaryDataDTO>>> getSummaryDataByBrand([FromBody] SummaryDataByBrandDTO summaryData)
         {
@@ -326,7 +331,7 @@ namespace ForcasrSummaryWebApi.Controllers
                                                 , $"=IFERROR(P{categoryColumnNo + 8} - P{categoryColumnNo + 4}, 0)" }
                                     };
 
-                                    if(summaryData.rollup.Count() != 0)
+                                    if (summaryData.rollup.Count() != 0)
                                     {
                                         var NullArray = new[] {
                                             new[] {"" },
@@ -344,7 +349,7 @@ namespace ForcasrSummaryWebApi.Controllers
                                         }
                                     }
 
-                                  
+
 
                                     if (summaryData.rollup.Contains("Full Year"))
                                     {
@@ -407,7 +412,7 @@ namespace ForcasrSummaryWebApi.Controllers
                                             fiscalMonthFormulas[i] = fiscalMonthFormulas[i].Concat(yearMatValues[i]).ToArray();
                                         }
                                     }
-                                     
+
 
                                     foreach (var Values in fiscalMonthFormulas)
                                     {
@@ -485,6 +490,54 @@ namespace ForcasrSummaryWebApi.Controllers
 
         }
 
+        #endregion
+        [HttpPost("extractFileUpload")]
+        public IActionResult UploadFile(IFormFile file)
+        {
+            // Check if a file was provided
+            if (file == null || file.Length == 0)
+                return BadRequest("No file provided");
 
+            //// Check if the file is an Excel file
+            //if (!file.FileName.EndsWith(".xlsx"))
+            //    return BadRequest("Invalid file format. Only .xlsx files are allowed.");
+
+            try
+            {
+                // Read the Excel file using ClosedXML
+                using (var workbook = new XLWorkbook(file.OpenReadStream()))
+                {
+                    var worksheet = workbook.Worksheet(1);
+                    var range = worksheet.RangeUsed();
+
+                    var rowCount = range.RowCount();
+                    var columnCount = range.ColumnCount();
+
+                    var result = new List<Dictionary<string, string>>();
+
+                    // Convert each row to a dictionary
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var dict = new Dictionary<string, string>();
+                        for (int col = 1; col <= columnCount; col++)
+                        {
+                            var key = range.Cell(1, col).Value.ToString();
+                            var value = range.Cell(row, col).Value.ToString();
+                            dict[key] = value;
+                        }
+                        result.Add(dict);
+                    }
+
+                    // Convert the result to JSON
+                    var json = JsonConvert.SerializeObject(result);
+
+                    return Ok(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error occurred while processing the file: " + ex.Message);
+            }
+        }
     }
 }
