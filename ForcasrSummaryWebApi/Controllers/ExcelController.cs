@@ -491,6 +491,9 @@ namespace ForcasrSummaryWebApi.Controllers
         }
 
         #endregion
+
+        #region extractFileUpload 
+
         [HttpPost("extractFileUpload")]
         public IActionResult UploadFile(IFormFile file)
         {
@@ -539,5 +542,7 @@ namespace ForcasrSummaryWebApi.Controllers
                 return BadRequest("Error occurred while processing the file: " + ex.Message);
             }
         }
+
+        #endregion
     }
 }
