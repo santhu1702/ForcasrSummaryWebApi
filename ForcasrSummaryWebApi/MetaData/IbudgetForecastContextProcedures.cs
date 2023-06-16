@@ -12,7 +12,7 @@ namespace ForcasrSummaryWebApi.MetaData
 {
     public partial interface IbudgetForecastContextProcedures
     {
-        Task<List<USP_GetSummaryDataResult>> USP_GetSummaryDataAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<USP_GetSummaryDataByBrandResult>> USP_GetSummaryDataByBrandAsync(string SubCatagoery, string source, string brands, string years, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<uploadDataResult>> uploadDataAsync(string jsonData, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<usp_GetDimFactDataResult>> usp_GetDimFactDataAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     }
 }

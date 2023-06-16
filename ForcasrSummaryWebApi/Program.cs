@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<budgetForecastContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ForcastSummary"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Forecast_Scenario_Modelling"));
 });
 
 builder.Services.AddCors();

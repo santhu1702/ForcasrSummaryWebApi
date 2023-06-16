@@ -34,8 +34,8 @@ namespace ForcasrSummaryWebApi.MetaData
 
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<USP_GetSummaryDataResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<USP_GetSummaryDataByBrandResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<uploadDataResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<usp_GetDimFactDataResult>().HasNoKey().ToView(null);
         }
     }
 
@@ -48,7 +48,7 @@ namespace ForcasrSummaryWebApi.MetaData
             _context = context;
         }
 
-        public virtual async Task<List<USP_GetSummaryDataResult>> USP_GetSummaryDataAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<uploadDataResult>> uploadDataAsync(string jsonData, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -59,16 +59,23 @@ namespace ForcasrSummaryWebApi.MetaData
 
             var sqlParameters = new []
             {
+                new SqlParameter
+                {
+                    ParameterName = "jsonData",
+                    Size = -1,
+                    Value = jsonData ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<USP_GetSummaryDataResult>("EXEC @returnValue = [dbo].[USP_GetSummaryData]", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<uploadDataResult>("EXEC @returnValue = [dbo].[uploadData] @jsonData", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
             return _;
         }
 
-        public virtual async Task<List<USP_GetSummaryDataByBrandResult>> USP_GetSummaryDataByBrandAsync(string SubCatagoery, string source, string brands, string years, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<usp_GetDimFactDataResult>> usp_GetDimFactDataAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -79,37 +86,9 @@ namespace ForcasrSummaryWebApi.MetaData
 
             var sqlParameters = new []
             {
-                new SqlParameter
-                {
-                    ParameterName = "SubCatagoery",
-                    Size = 2000,
-                    Value = SubCatagoery ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "source",
-                    Size = 2000,
-                    Value = source ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "brands",
-                    Size = 2000,
-                    Value = brands ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "years",
-                    Size = 2000,
-                    Value = years ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
-                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<USP_GetSummaryDataByBrandResult>("EXEC @returnValue = [dbo].[USP_GetSummaryDataByBrand] @SubCatagoery, @source, @brands, @years", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<usp_GetDimFactDataResult>("EXEC @returnValue = [dbo].[usp_GetDimFactData]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

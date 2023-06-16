@@ -15,19 +15,23 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
-         "Name": "[dbo].[summaryForcast]",
+         "Name": "[dbo].[per9]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[USP_GetSummaryData]",
+         "Name": "[dbo].[tblDimFactData]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[uploadData]",
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[USP_GetSummaryDataByBrand]",
+         "Name": "[dbo].[usp_GetDimFactData]",
          "ObjectType": 1
       }
    ],
-   "UiHint": "crowddev.budgetForecast.dbo",
+   "UiHint": "quadrantpocs.Forecast_Scenario_Modelling.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
