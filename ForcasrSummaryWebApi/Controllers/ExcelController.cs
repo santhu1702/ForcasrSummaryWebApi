@@ -116,7 +116,7 @@ namespace ForcasrSummaryWebApi.Controllers
 
                 var msg = await _context.GetProcedures().uploadDataAsync(json);
                 // Return a success response if the data was processed successfully
-                return Ok(new { message = msg });
+                return Ok(new { message = msg[0].Message });
             }
             catch (Exception ex)
             {

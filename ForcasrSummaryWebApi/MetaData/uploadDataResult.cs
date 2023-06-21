@@ -7,5 +7,6 @@ namespace ForcasrSummaryWebApi.MetaData
 {
     public partial class uploadDataResult
     {
+        public string Message { get; set; }
     }
 }
